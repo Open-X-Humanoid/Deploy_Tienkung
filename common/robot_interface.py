@@ -193,8 +193,6 @@ class RobotInterfaceImpl(RobotInterface):
             "STOP": FSMStateName.STOP,
             "ZERO": FSMStateName.ZERO,
             "WALKAMP": FSMStateName.WALKAMP,
-            "BEYONDMIMIC": FSMStateName.BEYONDMIMIC,
-            "BEYONDZERO": FSMStateName.BEYONDZERO,
         }
         self.waist_control_status = [state_to_FSMState[state] for state in config.get('waist_control_status')]
         self.legs_control_status = [state_to_FSMState[state] for state in config.get('legs_control_status')]

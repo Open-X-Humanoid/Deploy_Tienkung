@@ -181,24 +181,9 @@ class FSMStateBeyondMimic(FSMState):
 
             # 从实验室顺序映射到MjXUML顺序
             self.joint_pos_array = np.array([self.joint_pos_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-            # self.stiffness_array = np.array([self.stiffness_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-            # self.damping_array = np.array([self.damping_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-            
-            # 设置其他参数
-            # self.kps_lab = self.stiffness_array_seq
-            # self.kds_lab = self.damping_array_seq
+
             self.default_angles_lab = self.joint_pos_array_seq
             self.action_scale_lab = self.action_scale
-            # self.tau_limit = np.array(config["tau_limit"], dtype=np.float32)
-            
-            # self.num_actions = len(self.mj2lab)
-            # self.num_obs = 154  # 根据sim2sim代码固定为154
-
-            # 重新初始化与 num_actions 相关的数组
-            # self.qj_obs = np.zeros(self.num_actions, dtype=np.float32)
-            # self.dqj_obs = np.zeros(self.num_actions, dtype=np.float32)
-            # self.obs = np.zeros(self.num_obs)
-            # self.action = np.zeros(self.num_actions)
 
             print("BeyondMimic-like policy initializing ...")
             self._warmup_inference_counter = 0
@@ -529,8 +514,8 @@ class FSMStateBeyondMimic(FSMState):
             return FSMStateName.BEYONDMIMIC
         elif flag.fsm_state_command == "gotoBEYONDZERO":
             return FSMStateName.BEYONDZERO
-        elif flag.fsm_state_command == "gotoMLP":
-            return FSMStateName.MLP
+        elif flag.fsm_state_command == "gotoWALKAMP":
+            return FSMStateName.WALKAMP
         else:
             return None  # 无状态转换
 

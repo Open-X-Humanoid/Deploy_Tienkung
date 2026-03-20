@@ -187,10 +187,7 @@ class FSMStateWALKAMP(FSMState):
         self.lab2mj = np.array(self.lab2mj, dtype=int)
 
         # 从实验室顺序映射到MjXUML顺序
-        # self.joint_pos_array = np.array([self.joint_pos_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-        # self.stiffness_array = np.array([self.stiffness_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-        # self.damping_array = np.array([self.damping_array_seq[self.joint_seq.index(joint)] for joint in self.joint_xml])
-                # ====== 把 23 个 lab 关节 scatter 到 29 个 xml 里，多的 6 个保持默认 ======
+        # ====== 把 23 个 lab 关节 scatter 到 29 个 xml 里，多的 6 个保持默认 ======
         n_mj = len(self.joint_xml)
 
         # 29 长度，mujoco XML 顺序，先全 0 或者你想要的默认值
@@ -213,13 +210,6 @@ class FSMStateWALKAMP(FSMState):
 
 
         self.filtered_x_speed = 0
-        # n_mj = len(self.joint_xml)
-        # self.kp_array = np.zeros(n_mj, dtype=np.float32)
-        # self.kd_array = np.zeros(n_mj, dtype=np.float32)
-
-        # for lab_idx, mj_idx in enumerate(self.lab2mj):
-        #     self.kp_array[mj_idx] = self.kps_lab[lab_idx]
-        #     self.kd_array[mj_idx] = self.kds_lab[lab_idx]
 
     def _init_onnx_session(self):
         """初始化ONNX推理会话"""
@@ -282,13 +272,6 @@ class FSMStateWALKAMP(FSMState):
             self.compute_observation(flag,gait)
             self.compute_actions()
 
-
-                    # ====== 临时测试：强制动作为 0 ======
-            # self.actions_.fill(0.0)
-            # q_des = self.robot_data_.get_joint_pos()
-            # q_des = q_des[self.mj2lab]
-            # q_des = (q_des - self.default_angles_lab)
-
             # lab 顺序目标角 23 维
             target_dof_pos_lab = self.actions_ * self.action_scale_lab + self.default_angles_lab
 
@@ -297,9 +280,6 @@ class FSMStateWALKAMP(FSMState):
 
             # 只更新 23 个受控 DOF
             target_dof_pos_mj[self.lab2mj] = target_dof_pos_lab
-            # target_dof_pos_mj = np.zeros(29)
-            # target_dof_pos_lab = self.actions_ * self.action_scale_lab + self.default_angles_lab
-            # target_dof_pos_mj[self.mj2lab] = target_dof_pos_lab
             commanded_pos = target_dof_pos_mj
             if self._warm_start_steps > 0 and self._warmup_inference_counter < self._warm_start_steps:
                 self._warmup_inference_counter += 1
@@ -311,111 +291,15 @@ class FSMStateWALKAMP(FSMState):
 
             self.robot_data_.q_dot_d_[base:base + len(self.joint_xml)] = 0.0
             self.robot_data_.tau_d_[base:base + len(self.joint_xml)] = 0.0
-            # q_des_lab = self.default_angles_lab + self.actions_ * self.action_scale_lab
-            # qdot_des_lab = np.zeros_like(q_des_lab, dtype=np.float32)
 
             self.last_actions_[:] = self.actions_
 
-            # q_des_mj = np.zeros_like(q_des_lab, dtype=np.float32)
-            # qdot_des_mj = np.zeros_like(qdot_des_lab, dtype=np.float32)
 
-            # 把 lab 顺序的期望角，按 lab2mj 映射到 mj 顺序里面
-            # q_des_mj[self.lab2mj] = q_des_lab
-            # qdot_des_mj[self.lab2mj] = qdot_des_lab
-            # q_des_mj[self.lab2mj] = q_des_lab[self.lab2mj]
-            # qdot_des_mj[self.lab2mj] = qdot_des_lab[self.lab2mj]
-
-            # robot_data.q_d_.tail(motor_num_) = q_des_mj
-            # base = self.robot_data_.q_a_.shape[0] - self.motor_num_  # whole_joint_num - motor_num
-            # self.robot_data_.q_d_[base:] = q_des_mj
-            # self.robot_data_.q_dot_d_[base:] = qdot_des_mj
-            # self.robot_data_.tau_d_[base:] = 0.0  # 位置控制，力矩留给 PD 算
-            
-
-        # ====== 3) 写 PD 增益（mj 顺序） ======
-        # base = self.robot_data_.joint_kp_p_.shape[0] - self.motor_num_
-        # self.robot_data_.joint_kp_p_[self.mj2lab][:self.action_num_] = self.kps_lab
-        # self.robot_data_.joint_kd_p_[self.mj2lab][:self.action_num_] = self.kds_lab
-        # ====== 3) 写 PD 增益（mj 顺序，29DOF） ======
-        # base = self.robot_data_.joint_kp_p_.shape[0] - self.motor_num_
         self.timer_gait_ += self.dt_
         self.robot_data_.joint_kp_p_[:len(self.joint_xml)] = self.stiffness_array
         self.robot_data_.joint_kd_p_[:len(self.joint_xml)] = self.damping_array
-        # self.robot_data_.joint_kp_p_[27] = 80
-        # self.robot_data_.joint_kd_p_[27] = 5
-        # self.robot_data_.joint_kp_p_[26] = 80
-        # self.robot_data_.joint_kd_p_[26] = 5
-        # self.robot_data_.joint_kp_p_[28] = 80
-        # self.robot_data_.joint_kd_p_[28] = 5
-        # self.robot_data_.q_d_[33] = 0
-        # self.robot_data_.q_d_[34] = 0
-        # self.robot_data_.q_d_[32] = 0
-
-        # self.robot_data_.joint_kp_p_[21] = 80
-        # self.robot_data_.joint_kd_p_[21] = 5
-        # self.robot_data_.joint_kp_p_[20] = 80
-        # self.robot_data_.joint_kd_p_[20] = 5
-        # self.robot_data_.joint_kp_p_[19] = 80
-        # self.robot_data_.joint_kd_p_[19] = 5
-        # self.robot_data_.q_d_[27] = 0
-        # self.robot_data_.q_d_[26] = 0
-        # self.robot_data_.q_d_[25] = 0
-
-
-
-
-
-
-
 
     def compute_observation(self, flag: ControlFlag, gait):
-        #         # ====== Save q_a_ / q_dot_a_ raw joint order to txt (run only once) ======
-        # if not hasattr(self, "_saved_joint_order"):
-        #     self._saved_joint_order = True
-
-        #     save_path = "/home/eric/q_a_joint_order.txt"
-
-        #     with open(save_path, "w") as f:
-        #         f.write("q_a_ joint order (raw mj index order)\n")
-        #         f.write("--------------------------------------\n")
-
-        #         # q_a_ 里存的是 base(7) + joints(...)
-        #         total = len(self.robot_data_.q_a_)
-        #         f.write(f"Total q_a_ length = {total}\n\n")
-
-        #         for i in range(total):
-        #             # 找 XML 名字
-        #             name = self.joint_xml[i] if i < len(self.joint_xml) else "BASE_or_unused"
-        #             f.write(f"Idx {i:02d}: {name:25s}  q={self.robot_data_.q_a_[i]: .6f}   dq={self.robot_data_.q_dot_a_[i]: .6f}\n")
-
-        #         f.write("\nControlled 23 joints mapping (for reference):\n")
-        #         f.write("--------------------------------------\n")
-        #         for j, mj_idx in enumerate(self.controlled_joint_indices_):
-        #             name = self.joint_xml[mj_idx]
-        #             f.write(f"WALKAMP {j:02d} -> MjIdx {mj_idx:02d} ({name})\n")
-
-        """计算观测量 - 与C++版本完全一致"""
-
-        # t_now = float(self.robot_data_.time_now_)
-
-        # Phase calculation exactly like C++
-        # phase = math.fmod(t_now, self.gait_cycle_period_)
-
-        # cmd_norm = math.sqrt(
-        #     flag.x_speed_command * flag.x_speed_command +
-        #     flag.y_speed_command * flag.y_speed_command +
-        #     flag.yaw_speed_command * flag.yaw_speed_command
-        # )
-
-        # if cmd_norm >= 0.05:
-        #     self.phase_locked = False
-
-        # tolerance = 0.1
-        # if cmd_norm < 0.05 and abs(phase - self.gait_cycle_period_) < tolerance:
-        #     self.phase_locked = True
-
-        # if self.phase_locked:
-        #     phase = 0
         roll, pitch, yaw = (
                         float(self.robot_data_.imu_data_[2]),
                         float(self.robot_data_.imu_data_[1]),
@@ -439,13 +323,6 @@ class FSMStateWALKAMP(FSMState):
             ], dtype=np.float32),
         ])
         print(f'Input command: {command}')
-
-        # IMU data exactly like C++
-        # rpy = np.array([
-        #     self.robot_data_.imu_data_[2],  # roll
-        #     self.robot_data_.imu_data_[1],  # pitch
-        #     self.robot_data_.imu_data_[0]   # yaw
-        # ], dtype=np.float32) * 1.0
 
         gyro = np.array([
             self.robot_data_.imu_data_[3],
@@ -512,7 +389,6 @@ class FSMStateWALKAMP(FSMState):
         c = q_v * (2.0 * np.dot(q_v, v))
         return a - b + c
     def compute_actions(self):
-        """使用ONNX模型计算动作 - 与C++版本完全一致"""
         if self.ort_session_ is None:
             return
 
@@ -551,13 +427,6 @@ class FSMStateWALKAMP(FSMState):
             except Exception as e:
                 print(f"[FSMStateWALKAMP] failed to close obs log: {e}")
             self.obs_log_file = None
-
-
-        # if getattr(self, "log_file_", None) is not None:
-        #     self.log_file_.flush()
-        #     self.log_file_.close()
-        #     self.log_file_ = None
-        #     print(f"[FSMStateWALKAMP] log saved to {self.log_path_}")
 
     def check_transition(self, flag: ControlFlag) -> FSMStateName:
         """检查状态转换"""

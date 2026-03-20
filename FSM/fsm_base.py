@@ -14,8 +14,6 @@ class FSMStateName(Enum):
     STOP = 0      # 停止状态
     ZERO = 1      # 零位状态
     WALKAMP = 2   # WALKAMP策略状态
-    BEYONDMIMIC = 3  # beyondMimic策略状态
-    BEYONDZERO = 4  # beyondZero策略状态
 
 class FSMState(ABC):
     """FSM状态抽象基类"""

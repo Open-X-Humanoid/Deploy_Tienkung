@@ -1,5 +1,4 @@
-model_path: "policy.onnx"  #policy_base.onnx
-# model_path: "policy_base.onnx"
+model_path: "policy.onnx" 
 motor_num: 29        # 电机数量
 actions_size: 23     # action的大小
 dt: 0.01
@@ -50,17 +49,6 @@ size:
   num_hist: 10                     # 历史观测帧数
   observations_size: 84          # 单帧观测长度
 
-
-  # hip_pitch_l_joint, hip_pitch_r_joint, waist_yaw_joint,
-  # hip_roll_l_joint, hip_roll_r_joint, waist_roll_joint,
-  # hip_yaw_l_joint, hip_yaw_r_joint, waist_pitch_joint,
-  # knee_pitch_l_joint, knee_pitch_r_joint,
-  # shoulder_pitch_l_joint, shoulder_pitch_r_joint,
-  # ankle_pitch_l_joint, ankle_pitch_r_joint,
-  # shoulder_roll_l_joint, shoulder_roll_r_joint,
-  # ankle_roll_l_joint, ankle_roll_r_joint,
-  # shoulder_yaw_l_joint, shoulder_yaw_r_joint,
-  # elbow_pitch_l_joint, elbow_pitch_r_joint
 gains:
   kp: [
     300.0, 300.0, 400.0,

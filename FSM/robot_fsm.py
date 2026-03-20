@@ -50,8 +50,6 @@ class RobotFSMImpl(RobotFSM):
         self.state_objects[FSMStateName.STOP] = FSMStateStop(self.robot_data_)
         self.state_objects[FSMStateName.ZERO] = FSMStateZero(self.robot_data_)
         self.state_objects[FSMStateName.WALKAMP] = FSMStateWALKAMP(self.robot_data_)
-        self.state_objects[FSMStateName.BEYONDMIMIC] = FSMStateBeyondMimic(self.robot_data_)
-        self.state_objects[FSMStateName.BEYONDZERO] = FSMStateBeyondZero(self.robot_data_)
 
         # TODO: 添加其他状态对象
     @timing_decorator

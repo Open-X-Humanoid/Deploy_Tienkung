@@ -2,7 +2,7 @@ motor_num: 29        # 电机数量
 # actions_size: 12     # action的大小
 dt: 0.01
 
-sim: false # true:仿真模式 false:真机模式
+sim: false 
 
 debug: false
 
@@ -42,9 +42,9 @@ xbox:
 
 robot_interface:
   clip_actions: false
-  waist_control_status: ["ZERO", "STOP", "BEYONDMIMIC", "BEYONDZERO", "WALKAMP"] # 
+  waist_control_status: ["ZERO", "STOP",  "WALKAMP"] # 
   legs_control_status: [] #空代表都允许控制，仅腿部是这个逻辑
-  arms_control_status: ["ZERO", "STOP",  "BEYONDMIMIC", "BEYONDZERO", "WALKAMP"] #
+  arms_control_status: ["ZERO", "STOP",  "WALKAMP"] #
   left_arm_only_status: []
   right_arm_only_status: []
   xsense_data_roll_offset: 0.0
