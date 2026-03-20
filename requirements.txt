@@ -1,0 +1,8 @@
+# 机器人控制系统依赖
+numpy == 2.3.5
+onnxruntime==1.24.2
+onnx==1.20.1
+pandas==3.0.1
+pyyaml==6.0.3
+scipy==1.17.1
+transforms3d==0.4.2

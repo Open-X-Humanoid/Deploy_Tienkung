@@ -1,0 +1,110 @@
+motor_num: 29        # 电机数量
+# actions_size: 12     # action的大小
+dt: 0.01
+
+sim: false # true:仿真模式 false:真机模式
+
+debug: false
+
+control_tool: keyboard # joystick, xbox, keyboard
+
+joystick:
+  initial_height: 0.957
+  max_height: 0.991
+  min_height: 0.791
+  x_command_offset: 0.0
+  y_command_offset: 0.0
+  yaw_command_offset: 0.0
+  max_x_plus_speed: 0.8
+  max_x_minus_speed: 0.5
+  max_y_speed: 0.5
+  max_yaw_speed: 0.8
+
+keyboard:
+  initial_height: 0.90
+  forward_command_offset: 0.0
+  lateral_command_offset: 0.0
+  rotation_command_offset: 0
+  height_step: 0.05
+  max_forward_speed: 1.5
+  max_lateral_speed: 0.5
+  max_rotation_speed: 0.8
+
+xbox:
+  # 其他配置参数
+  initial_height: 0.89
+  forward_command_offset: 0.0
+  lateral_command_offset: 0.0
+  rotation_command_offset: 0.0
+  height_step: 0.05
+
+
+
+robot_interface:
+  clip_actions: false
+  waist_control_status: ["ZERO", "STOP", "BEYONDMIMIC", "BEYONDZERO", "WALKAMP"] # 
+  legs_control_status: [] #空代表都允许控制，仅腿部是这个逻辑
+  arms_control_status: ["ZERO", "STOP",  "BEYONDMIMIC", "BEYONDZERO", "WALKAMP"] #
+  left_arm_only_status: []
+  right_arm_only_status: []
+  xsense_data_roll_offset: 0.0
+  zero_pos: [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+      ]
+  # 电流转力矩系数
+  ct_scale: [
+            2.1, 2.1, 3.207, 2.673, 2.6, 2.6, 
+            2.1, 2.1, 3.207, 2.673, 2.6, 2.6, 
+            3.207, 3.207, 3.207, 
+            3.207, 2.28, 5.89, 5.89, 3.35, 2.3, 2.3, 
+            3.207, 2.28, 5.89, 5.89, 3.35, 2.3, 2.3
+      ]
+  disable_joints: false
+
+  # 关节限位配置
+  joint_limits:
+    # 腿部关节
+    l_hip_pitch:     {min: -3.14, max: 3.14}   # -180° to 180°
+    l_hip_roll:      {min: -0.47, max: 2.62}   # -27° to 150°
+    l_hip_yaw:       {min: -1.57, max: 4.54}   # -90° to 260°
+    l_knee:          {min: -0.09, max: 2.53}   # -5° to 145°
+    l_ankle_pitch:   {min: -1.22, max: 0.52}   # -70° to 30°
+    l_ankle_roll:    {min: -0.52, max: 0.52}   # -30° to 30°
+    
+    r_hip_pitch:     {min: -3.14, max: 3.14}   # -180° to 180°
+    r_hip_roll:      {min: -0.47, max: 2.62}   # -27° to 150°
+    r_hip_yaw:       {min: -1.57, max: 4.54}   # -90° to 260°
+    r_knee:          {min: -0.09, max: 2.53}   # -5° to 145°
+    r_ankle_pitch:   {min: -1.22, max: 0.52}   # -70° to 30°
+    r_ankle_roll:    {min: -0.52, max: 0.52}   # -30° to 30°
+    
+    # 腰部关节
+    waist_yaw:       {min: -2.97, max: 3.14}   # -170° to 180°
+    waist_roll:      {min: -0.52, max: 0.52}   # -30° to 30°
+    waist_pitch:     {min: -0.52, max: 1.05}   # -30° to 60°
+    
+    # 左臂关节
+    l_shoulder_pitch: {min: -2.97, max: 2.97}  # -170° to 170°
+    l_shoulder_roll:  {min: -0.26, max: 3.40}  # -15° to 195°
+    l_shoulder_yaw:   {min: -2.97, max: 2.97}  # -170° to 170°
+    l_elbow:          {min: -2.62 , max: 0.26}  # -150° to 15°
+    l_wrist_yaw:      {min: -2.97, max: 2.97}  # -170° to 170°
+    l_wrist_pitch:    {min: -1.31, max: 1.40}  # -75° to 80°
+    l_wrist_roll:     {min: -1.05, max: 0.79}  # -60° to 45°
+    
+    # 右臂关节
+    r_shoulder_pitch: {min: -2.97, max: 2.97}  # -170° to 170°
+    r_shoulder_roll:  {min: -3.40, max: 0.26}  # -195° to 15°
+    r_shoulder_yaw:   {min: -2.97, max: 2.97}  # -170° to 170°
+    r_elbow:          {min: -2.62, max: 0.26}  # -150° to 15°
+    r_wrist_yaw:      {min: -2.97, max: 2.97}  # -170° to 170°
+    r_wrist_pitch:    {min: -1.31, max: 1.40}  # -75° to 80°
+    r_wrist_roll:     {min: -0.79, max: 1.05}  # -45° to 60°
+
+  # 脚踝并联关节Kp,Kd
+  ankle_kp_p: [15.0, 15.0, 15.0, 15.0] # ankle_pitch_left, ankle_roll_left, ankle_pitch_right, ankle_roll_right
+  ankle_kd_p: [1.25, 1.25, 1.25, 1.25]
