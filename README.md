@@ -23,10 +23,17 @@ xMIGCS是一个用于机器人控制的软件系统，专注于通过有限状�
 cd your_project_folder
 unzip xmigcs.zip
 cd xmigcs/
-pip install -r requirements.txt
-pip install lib/sptlib_python-0.1.0-cp312-cp312-linux_x86_64.whl
+# 系统是24.04
+pip install -r requirements_24.txt
+pip install lib/24/sptlib_python-0.1.0-cp312-cp312-linux_x86_64.whl
+# 系统是22.04
+pip install -r requirements_22.txt
+pip install lib/22/sptlib_python-0.1.0-cp310-cp310-linux_x86_64.whl
 # 仅仿真中需要安装
-sudo dpkg i lib/ros-jazzy-bodyctrl-msgs_0.0.0-0noble_amd64.deb 
+# 24.04下
+sudo dpkg -i lib/24/ros-jazzy-bodyctrl-msgs_0.0.0-0noble_amd64.deb 
+# 22.04下
+sudo dpkg -i lib/22/ros-humble-bodyctrl-msgs_0.0.0-0jammy_amd64.deb
 ```
 
 ### 运行项目
@@ -50,7 +57,12 @@ python3 rl_control_node.py
 # 仿真
 # 设置domain_id防止局域网络与其他机器人冲突
 export ROS_DOMAIN_ID=YOUR_DOMAIN_ID
+# 24.04, ros2=jazzy
 source /opt/ros/jazzy/setup.bash
+cd xmigcs
+python3 rl_control_node_sim.py
+# 22.04, ros2=humble
+source /opt/ros/humble/setup.bash
 cd xmigcs
 python3 rl_control_node_sim.py
 ```
