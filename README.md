@@ -46,20 +46,22 @@ sudo systemctl disable proc_manager.service
 #确认自启动已关闭，运行下面命令，若service状态为inactive，则已关闭
 sudo systemctl status proc_manager.service
 
-# 真机上启动body_control
+# 真机上启动body_control(绑定核心，只能绑6-9)
 sudo su
 source /home/ubuntu/xos/setup.bash
-ros2 launch body_control body_control.launch.py
+chrt -r 99 taskset -c 6-9 ros2 launch body_control body_control.launch.py
 # 启动手柄
 sudo su
 source /home/ubuntu/xos/setup.bash
 ros2 launch joystick joystick.launch.py
 
 # 启动主控制节点
-# 实机
+# 实机(绑定核心，推理频率更稳定，只能绑0-5)
+sudo su
 source /home/ubuntu/xos/setup.bash
 cd xmigcs
-python3 rl_control_node.py
+chrt -r 1 taskset -c 0-5 python3 rl_control_node.py
+
 # 仿真
 # 设置domain_id防止局域网络与其他机器人冲突
 export ROS_DOMAIN_ID=YOUR_DOMAIN_ID
