@@ -40,6 +40,12 @@ sudo dpkg -i lib/22/ros-humble-bodyctrl-msgs_0.0.0-0jammy_amd64.deb
 
 ```bash
 # body节点, 只有真机才需要，仿真启动xsim_mujoco就行
+#先关闭真机自启动运控程序
+sudo systemctl disable proc_manager.service
+#按急停，等待5s后再松开
+#确认自启动已关闭，运行下面命令，若service状态为inactive，则已关闭
+sudo systemctl status proc_manager.service
+
 # 真机上启动body_control
 sudo su
 source /home/ubuntu/xos/setup.bash
