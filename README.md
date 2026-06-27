@@ -42,8 +42,8 @@ sudo dpkg -i lib/22/ros-humble-bodyctrl-msgs_0.0.0-0jammy_amd64.deb
 # body节点, 只有真机才需要，仿真启动xsim_mujoco就行
 #先关闭真机自启动运控程序
 sudo systemctl disable proc_manager.service
-#按急停，等待5s后再松开
-#确认自启动已关闭，运行下面命令，若service状态为inactive，则已关闭
+#断电关机重启
+#开机后，确认自启动已关闭，运行下面命令，若service状态为inactive，则已关闭
 sudo systemctl status proc_manager.service
 
 # 真机上启动body_control(绑定核心，只能绑6-9)
@@ -59,7 +59,10 @@ ros2 launch joystick joystick.launch.py
 # 实机(绑定核心，推理频率更稳定，只能绑0-5)
 sudo su
 source /home/ubuntu/xos/setup.bash
-cd xmigcs
+export PYTHONPATH="/home/ubuntu/.local/lib/python3.12/site-packages/:/home/ubuntu/.local/lib/python3.12/site-packages/cmeel.prefix/lib/python3.12/site-packages/:/home/ubuntu/xos/robot_control/lib/python:$PYTHONPATH"
+export LD_LIBRARY_PATH="/home/ubuntu/.local/lib/python3.12/site-packages/:/home/ubuntu/.local/lib/python3.12/site-packages/cmeel.prefix/lib:/home/ubuntu/xos/robot_control/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export PATH="/home/ubuntu/.local/bin:$PATH"
+cd Deploy_Tienkung
 chrt -r 1 taskset -c 0-5 python3 rl_control_node.py
 
 # 仿真
