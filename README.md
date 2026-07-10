@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://opensource.x-humanoid-cloud.com/plugin.php?id=keke_video_base&ac=course&cid=27">
+    <img src="./static/sim2real-hardware-training.png" width="700">
+  </a>
+</p>
+
 # 天工人形机器人强化学习控制项目集
 
 这个仓库包含了天工系列人形机器人强化学习控制系统的主要组件。
