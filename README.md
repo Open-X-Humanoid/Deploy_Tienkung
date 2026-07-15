@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://opensource.x-humanoid-cloud.com/plugin.php?id=keke_video_base&ac=course&cid=27">
-    <img src="./static/sim2real-hardware-training.png" width="700">
+    <img src="./static/course-sim2real-banner.png" width="700">
   </a>
 </p>
 
