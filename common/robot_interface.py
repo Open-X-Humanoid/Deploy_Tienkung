@@ -96,12 +96,9 @@ class RobotInterfaceImpl(RobotInterface):
 
         # 临时变量用于优化计算
         self.temp_q = np.empty(self.id_map.whole_motor_nums)
-        # 预分配另一个用于存储中间计算的临时数组
-        self._temp_zero_cnt = np.empty(self.id_map.whole_motor_nums)
 
         # 电机控制参数
         self.motor_dir = np.ones(self.id_map.whole_motor_nums)
-        self.zero_cnt = np.zeros(self.id_map.whole_motor_nums)
         self.zero_offset = np.zeros(self.id_map.whole_motor_nums)
 
         # 添加标志位，用于跟踪是否是首次接收数据
@@ -378,13 +375,6 @@ class RobotInterfaceImpl(RobotInterface):
             self.robot_data_.q_a_[robotdata_index] = (
                 status.pos - self.zero_pos[index]
             ) * self.motor_dir[index] + self.zero_offset[index]
-            if self.robot_data_.q_a_[robotdata_index] > math.pi:
-                self.zero_cnt[index] = -1.0
-            elif self.robot_data_.q_a_[robotdata_index] < -math.pi:
-                self.zero_cnt[index] = 1.0
-
-            self.robot_data_.q_a_[
-                robotdata_index] += self.zero_cnt[index] * 2.0 * math.pi
             self.robot_data_.q_dot_a_[robotdata_index] *= self.motor_dir[index]
             self.robot_data_.tau_a_[robotdata_index] *= self.motor_dir[index]
 
@@ -459,15 +449,9 @@ class RobotInterfaceImpl(RobotInterface):
         qdot_d_reordered = self.robot_data_.q_dot_d_[self.floating_base_dof:]
         tor_d_reordered = self.robot_data_.tau_d_[self.floating_base_dof:]
 
-        # 计算 q_d_reordered - self.zero_offset
+        # 计算 (q_d_reordered - self.zero_offset) * self.motor_dir + self.zero_pos
         np.subtract(q_d_reordered, self.zero_offset, out=self.temp_q)
-        # 计算 self.zero_cnt * 2.0 * self.pi
-        np.multiply(self.zero_cnt, 2.0 * math.pi, out=self._temp_zero_cnt)
-        # 计算 q_d_reordered - self.zero_offset - self.zero_cnt * 2.0 * self.pi
-        np.subtract(self.temp_q, self._temp_zero_cnt, out=self.temp_q)
-        # 计算 (q_d_reordered - self.zero_offset - self.zero_cnt * 2.0 * self.pi) * self.motor_dir
         np.multiply(self.temp_q, self.motor_dir, out=self.temp_q)
-        # 计算最终结果 (q_d_reordered - self.zero_offset - self.zero_cnt * 2.0 * self.pi) * self.motor_dir + self.zero_pos
         np.add(self.temp_q,
                self.zero_pos,
                out=self.robot_data_.q_d_[self.floating_base_dof:])
